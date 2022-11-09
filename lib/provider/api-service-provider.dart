@@ -1,9 +1,7 @@
-import 'dart:convert';
-
-import 'package:flutter/cupertino.dart';
-import '../model/dashboard-model.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 
+import '../model/dashboard-model.dart';
 import '../utils/constant/api.dart';
 
 enum Status { authenticated, authenticating, unauthenticated }

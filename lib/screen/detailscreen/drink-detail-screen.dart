@@ -1,16 +1,15 @@
 import 'package:cocktail/utils/constant/string.dart';
 import 'package:flutter/material.dart';
+
+import '../../localdatabase/db-data.dart';
 import '../../model/drinks-model.dart';
 import '../../utils/constant/hexcolor.dart';
 import '../../utils/constant/image.dart';
 import '../../utils/constant/singleTon.dart';
 import '../../utils/constant/styles.dart';
 
-
 class DrinkDetailScreen extends StatefulWidget {
-
   final Drinks? drink;
-
   const DrinkDetailScreen({Key? key, this.drink}) : super(key: key);
 
   @override
@@ -18,6 +17,24 @@ class DrinkDetailScreen extends StatefulWidget {
 }
 
 class _DrinkDetailScreenState extends State<DrinkDetailScreen> {
+  bool isFav = false;
+
+  @override
+  void initState() {
+    super.initState();
+    favDataGet();
+  }
+
+  favDataGet() async {
+    List data = await DatabaseHelper.instance
+        .checkIsfavoriteData(widget.drink?.idDrink);
+    if (data.isNotEmpty) {
+      isFav = true;
+    } else {
+      isFav = false;
+    }
+    setState(() {});
+  }
 
   Widget imageView() {
     return Stack(
@@ -25,7 +42,7 @@ class _DrinkDetailScreenState extends State<DrinkDetailScreen> {
       children: [
         Container(
           width: double.maxFinite,
-          height: (AppSession.shared.width!*1.08),
+          height: (AppSession.shared.width! * 1.08),
           decoration: BoxDecoration(
             borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(15),
@@ -40,7 +57,7 @@ class _DrinkDetailScreenState extends State<DrinkDetailScreen> {
         Align(
           alignment: Alignment.bottomCenter,
           child: Container(
-            height: (AppSession.shared.width!/2),
+            height: (AppSession.shared.width! / 2),
             width: double.infinity,
             decoration: BoxDecoration(
               gradient: LinearGradient(
@@ -63,7 +80,6 @@ class _DrinkDetailScreenState extends State<DrinkDetailScreen> {
               style: textFieldStyle,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              //textAlign: TextAlign.start,
             ),
           ),
         ),
@@ -80,7 +96,6 @@ class _DrinkDetailScreenState extends State<DrinkDetailScreen> {
           style: infoTitleStyle,
           maxLines: 1,
           overflow: TextOverflow.ellipsis,
-          //textAlign: TextAlign.start,
         ),
       ),
     );
@@ -89,7 +104,8 @@ class _DrinkDetailScreenState extends State<DrinkDetailScreen> {
   Widget detailView(String text) {
     return Center(
       child: Padding(
-        padding: const EdgeInsets.only(top: 10.0,right: 10, left: 10, bottom: 15),
+        padding:
+            const EdgeInsets.only(top: 10.0, right: 10, left: 10, bottom: 15),
         child: Text(
           text,
           style: infoDetailStyle,
@@ -101,19 +117,31 @@ class _DrinkDetailScreenState extends State<DrinkDetailScreen> {
 
   String getIngredient() {
     String ingredient = "";
-    var ingredients = [widget.drink?.strIngredient1,widget.drink?.strIngredient2,
-      widget.drink?.strIngredient3,widget.drink?.strIngredient4,
-      widget.drink?.strIngredient5,widget.drink?.strIngredient6,widget.drink?.strIngredient7,
-      widget.drink?.strIngredient8,widget.drink?.strIngredient9,widget.drink?.strIngredient10,
-      widget.drink?.strIngredient11,widget.drink?.strIngredient12,widget.drink?.strIngredient12,
-      widget.drink?.strIngredient13,widget.drink?.strIngredient14,widget.drink?.strIngredient15];
+    var ingredients = [
+      widget.drink?.strIngredient1,
+      widget.drink?.strIngredient2,
+      widget.drink?.strIngredient3,
+      widget.drink?.strIngredient4,
+      widget.drink?.strIngredient5,
+      widget.drink?.strIngredient6,
+      widget.drink?.strIngredient7,
+      widget.drink?.strIngredient8,
+      widget.drink?.strIngredient9,
+      widget.drink?.strIngredient10,
+      widget.drink?.strIngredient11,
+      widget.drink?.strIngredient12,
+      widget.drink?.strIngredient12,
+      widget.drink?.strIngredient13,
+      widget.drink?.strIngredient14,
+      widget.drink?.strIngredient15
+    ];
 
     for (String? i in ingredients) {
-      if(ingredient.isNotEmpty){
-          ingredient+= ((i!=null && i.isNotEmpty)?"\n$i":"");
-        } else{
-          ingredient+= (i!=null && i.isNotEmpty)?i:"";
-        }
+      if (ingredient.isNotEmpty) {
+        ingredient += ((i != null && i.isNotEmpty) ? "\n$i" : "");
+      } else {
+        ingredient += (i != null && i.isNotEmpty) ? i : "";
+      }
     }
     return ingredient;
   }
@@ -132,6 +160,25 @@ class _DrinkDetailScreenState extends State<DrinkDetailScreen> {
           width: 200,
         ),
         centerTitle: true,
+        actions: [
+          MaterialButton(
+            onPressed: () {
+              DatabaseHelper.instance.favoriteUpdate(
+                  widget.drink?.idDrink, (isFav != true ? "1" : "0"));
+              isFav = !isFav;
+              setState(() {});
+            },
+            minWidth: 0,
+            padding: const EdgeInsets.all(10),
+            materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+            shape: const CircleBorder(),
+            child: Icon(
+              Icons.favorite_rounded,
+              size: 28,
+              color: isFav == true ? Colors.red : Colors.grey[400],
+            ),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -139,13 +186,19 @@ class _DrinkDetailScreenState extends State<DrinkDetailScreen> {
           children: [
             imageView(),
             titleView('Category:'),
-            detailView(widget.drink?.strCategory ?? '',),
-            const Divider(color: Colors.white,height: 1),
+            detailView(
+              widget.drink?.strCategory ?? '',
+            ),
+            const Divider(color: Colors.white, height: 1),
             titleView('Instructions:'),
-            detailView(widget.drink?.strInstructionsDE ?? '',),
-            const Divider(color: Colors.white,height: 1),
+            detailView(
+              widget.drink?.strInstructionsDE ?? '',
+            ),
+            const Divider(color: Colors.white, height: 1),
             titleView('Ingredient:'),
-            detailView(getIngredient(),),
+            detailView(
+              getIngredient(),
+            ),
           ],
         ),
       ),

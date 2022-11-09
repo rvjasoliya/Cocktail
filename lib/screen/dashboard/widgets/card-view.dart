@@ -3,27 +3,32 @@ import 'package:cocktail/utils/constant/string.dart';
 import 'package:flutter/material.dart';
 
 import '../../../model/drinks-model.dart';
-import '../../../utils/constant/hexcolor.dart';
 import '../../../utils/constant/styles.dart';
 
-class CardView extends StatelessWidget {
+class CardView extends StatefulWidget {
   final Drinks? drink;
-
-  const CardView(
-      this.drink,
-      );
+  Function? callback;
+  CardView({this.drink, this.callback, Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  State<CardView> createState() => _CardViewState();
+}
 
+class _CardViewState extends State<CardView> {
+  @override
+  Widget build(BuildContext context) {
     return InkWell(
       onTap: () async {
-        Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-          return DrinkDetailScreen(drink: drink,);
-        }));
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => DrinkDetailScreen(
+                      drink: widget.drink,
+                    ))).then((value) {
+          widget.callback!();
+        });
       },
       child: Card(
-        //elevation: 2,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0),
         ),
@@ -40,7 +45,7 @@ class CardView extends StatelessWidget {
                       topRight: Radius.circular(15),
                     ),
                     image: DecorationImage(
-                      image: NetworkImage(drink?.strDrinkThumb ?? ''),
+                      image: NetworkImage(widget.drink?.strDrinkThumb ?? ''),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -49,7 +54,7 @@ class CardView extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  (drink?.strDrink ?? '').useCorrectEllipsis(),
+                  (widget.drink?.strDrink ?? '').useCorrectEllipsis(),
                   style: cardTextStyle,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
@@ -57,6 +62,6 @@ class CardView extends StatelessWidget {
               ),
             ]),
       ),
-    );;
+    );
   }
 }

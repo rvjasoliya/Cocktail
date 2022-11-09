@@ -22,34 +22,38 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-          primaryColor: Colors.white,
-          hintColor: Colors.white54,
-          primarySwatch: Colors.blue,
-          canvasColor: Colors.grey,
-          unselectedWidgetColor: Colors.white,
-          textTheme: const TextTheme(
-            bodyText1: TextStyle(color: Colors.white),
-            bodyText2: TextStyle(color: Colors.white),
-            button: TextStyle(color: Colors.white30),
-            caption: TextStyle(color: Colors.white),
-            subtitle1: TextStyle(color: Colors.white), // <-- that's the one
-            headline1: TextStyle(color: Colors.white),
-            headline2: TextStyle(color: Colors.white),
-            headline3: TextStyle(color: Colors.white),
-            headline4: TextStyle(color: Colors.white),
-            headline5: TextStyle(color: Colors.white),
-            headline6: TextStyle(color: Colors.white),
-          ),
-          inputDecorationTheme: const InputDecorationTheme(
-            labelStyle: TextStyle(color: Colors.white30),
-            hintStyle: TextStyle(color: Colors.white30),
-          )
+    return GestureDetector(
+      onTap: () => FocusManager.instance.primaryFocus?.unfocus(),
+      onVerticalDragEnd: (DragEndDetails details) =>
+          FocusManager.instance.primaryFocus?.unfocus(),
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+            primaryColor: Colors.white,
+            hintColor: Colors.white54,
+            primarySwatch: Colors.blue,
+            canvasColor: Colors.grey,
+            unselectedWidgetColor: Colors.white,
+            textTheme: const TextTheme(
+              bodyText1: TextStyle(color: Colors.white),
+              bodyText2: TextStyle(color: Colors.white),
+              button: TextStyle(color: Colors.white30),
+              caption: TextStyle(color: Colors.white),
+              subtitle1: TextStyle(color: Colors.white), // <-- that's the one
+              headline1: TextStyle(color: Colors.white),
+              headline2: TextStyle(color: Colors.white),
+              headline3: TextStyle(color: Colors.white),
+              headline4: TextStyle(color: Colors.white),
+              headline5: TextStyle(color: Colors.white),
+              headline6: TextStyle(color: Colors.white),
+            ),
+            inputDecorationTheme: const InputDecorationTheme(
+              labelStyle: TextStyle(color: Colors.white30),
+              hintStyle: TextStyle(color: Colors.white30),
+            )),
+        home: SplashScreen(),
       ),
-      home: SplashScreen(),
     );
   }
 }
